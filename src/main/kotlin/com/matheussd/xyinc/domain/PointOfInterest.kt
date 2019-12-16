@@ -22,7 +22,7 @@ class PointOfInterest: Serializable {
 
         other as PointOfInterest
 
-        if (pointOfInterestCompositeId != other.pointOfInterestCompositeId) return false
+        if ( !pointOfInterestCompositeId.equals(other.pointOfInterestCompositeId) ) return false
 
         return true
     }
