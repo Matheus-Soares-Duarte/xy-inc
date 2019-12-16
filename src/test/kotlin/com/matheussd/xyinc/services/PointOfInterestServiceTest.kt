@@ -4,6 +4,8 @@ import com.matheussd.xyinc.builders.PointOfInterestBuilder
 import com.matheussd.xyinc.repositories.PointOfInterestRepository
 import com.matheussd.xyinc.services.exceptions.BadRequestException
 import com.matheussd.xyinc.services.exceptions.ObjectNotFoundException
+import com.matheussd.xyinc.services.exceptions.UpgradeRequiredException
+import com.matheussd.xyinc.services.exceptions.enums.ExceptionsMessagesEnum
 import com.matheussd.xyinc.services.exceptions.enums.PointOfInterestExceptionsMessagesEnum
 import org.junit.Assert
 import org.junit.Before
@@ -46,6 +48,25 @@ class PointOfInterestServiceTest {
             Assert.assertEquals(builtPointOfInterest, returnedPointOfInterest)
         } catch (exception: Exception){
             Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun should_Insert_PointOfInterest() {
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+
+        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
+                .thenReturn( Optional.empty() )
+
+        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterest))
+                .thenReturn( builtPointOfInterest )
+
+        try {
+            val returnedPointOfInterestList = pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
+
+            Assert.assertEquals(builtPointOfInterest, returnedPointOfInterestList)
+        } catch (e: Exception){
+            Assert.fail("Unexpected exception = "+e.message)
         }
     }
 
@@ -137,6 +158,72 @@ class PointOfInterestServiceTest {
                     PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message)
         } catch (exception: BadRequestException){
             Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_Insert_PointOfInterest_WhenFoundRequestedElement() {
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+
+        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
+                .thenReturn( Optional.of(builtPointOfInterest) )
+
+        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterest))
+                .thenReturn( builtPointOfInterest )
+
+        try {
+            pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    ExceptionsMessagesEnum.UPGRADE_REQUIRED.message)
+        } catch (exception: UpgradeRequiredException){
+            Assert.assertTrue(exception.message!!.startsWith(ExceptionsMessagesEnum.UPGRADE_REQUIRED.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_Insert_PointOfInterest_WithBlankName() {
+        val builtPointOfInterestWithBlankName = PointOfInterestBuilder().makePointOfInterest().whithBlankName().build()
+
+        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithBlankName.pointOfInterestCompositeId))
+                .thenReturn( Optional.empty() )
+
+        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterestWithBlankName))
+                .thenReturn( builtPointOfInterestWithBlankName )
+
+        try {
+            pointOfInterestService.insert(builtPointOfInterestWithBlankName.pointOfInterestCompositeId)
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_BLANK_NAME.message)
+        } catch (exception: BadRequestException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_BLANK_NAME.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_Insert_PointOfInterest_WithNegativeCoordinates() {
+        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder().makePointOfInterest().whithNegativeCoordinates().build()
+
+        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId))
+                .thenReturn( Optional.empty() )
+
+        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterestWithNegativeCoordinates))
+                .thenReturn( builtPointOfInterestWithNegativeCoordinates )
+
+        try {
+            pointOfInterestService.insert(builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId)
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NEGATIVE_VALUE.message)
+        } catch (exception: BadRequestException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NEGATIVE_VALUE.message))
         } catch (exception: Exception){
             Assert.fail("Unexpected exception = "+exception.message)
         }

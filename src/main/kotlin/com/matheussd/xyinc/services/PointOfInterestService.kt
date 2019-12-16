@@ -5,6 +5,8 @@ import com.matheussd.xyinc.domain.PointOfInterestCompositeId
 import com.matheussd.xyinc.repositories.PointOfInterestRepository
 import com.matheussd.xyinc.services.exceptions.BadRequestException
 import com.matheussd.xyinc.services.exceptions.ObjectNotFoundException
+import com.matheussd.xyinc.services.exceptions.UpgradeRequiredException
+import com.matheussd.xyinc.services.exceptions.enums.ExceptionsMessagesEnum
 import com.matheussd.xyinc.services.exceptions.enums.PointOfInterestExceptionsMessagesEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -57,6 +59,20 @@ class PointOfInterestService {
         return pointOfInterest.orElseThrow {
             throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message +
                     " Requested Element: $pointOfInterestCompositeId.")
+        }
+    }
+
+    fun insert(pointOfInterestCompositeId: PointOfInterestCompositeId): PointOfInterest {
+        try {
+            val pointOfInterest = find(pointOfInterestCompositeId.name,
+                    pointOfInterestCompositeId.x.toString(),
+                    pointOfInterestCompositeId.y.toString())
+
+            throw UpgradeRequiredException (ExceptionsMessagesEnum.UPGRADE_REQUIRED.message +
+                    " Requested Element: $pointOfInterest.")
+        } catch (exception: ObjectNotFoundException){
+            val pointOfInterest = PointOfInterest(pointOfInterestCompositeId.name, pointOfInterestCompositeId.x, pointOfInterestCompositeId.y)
+            return pointOfInterestRepository!!.save(pointOfInterest)
         }
     }
 }
