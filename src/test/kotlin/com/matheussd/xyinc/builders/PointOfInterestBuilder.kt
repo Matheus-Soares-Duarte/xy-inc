@@ -7,11 +7,18 @@ class PointOfInterestBuilder {
 
     companion object {
         fun makePointOfInterest(): PointOfInterestBuilder{
-            var pointOfInterestBuilder = PointOfInterestBuilder()
+            val pointOfInterestBuilder = PointOfInterestBuilder()
             pointOfInterestBuilder.pointOfInterest = PointOfInterest("Point Of Interest Name", 10, 10)
 
             return pointOfInterestBuilder
         }
+    }
+
+    fun makeOtherPointOfInterest(): PointOfInterestBuilder{
+        val pointOfInterestBuilder = PointOfInterestBuilder()
+        pointOfInterestBuilder.pointOfInterest = PointOfInterest("Other Point Of Interest Name", 20, 20)
+
+        return pointOfInterestBuilder
     }
 
     fun whithNegativeCoordinates(): PointOfInterestBuilder{
