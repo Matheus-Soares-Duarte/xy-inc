@@ -4,16 +4,10 @@ import java.io.Serializable
 import javax.persistence.Embeddable
 
 @Embeddable
-class PointOfInterestCompositeId: Serializable {
+class PointOfInterestCompositeId(var name: String, var x: Int, var y: Int): Serializable {
 
-    var name: String
-    var x: Int
-    var y: Int
-
-    constructor(name: String, x: Int, y: Int){
-        this.name = name.toUpperCase()
-        this.x = x
-        this.y = y
+    init {
+        name = name.toUpperCase()
     }
 
     override fun equals(other: Any?): Boolean {

@@ -7,14 +7,10 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "point_of_interest")
-class PointOfInterest: Serializable {
+class PointOfInterest(name: String, x: Int, y: Int) : Serializable {
 
     @EmbeddedId
-    var pointOfInterestCompositeId: PointOfInterestCompositeId
-
-    constructor(name: String, x: Int, y: Int){
-        this.pointOfInterestCompositeId = PointOfInterestCompositeId(name, x, y)
-    }
+    var pointOfInterestCompositeId: PointOfInterestCompositeId = PointOfInterestCompositeId(name, x, y)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -22,7 +18,7 @@ class PointOfInterest: Serializable {
 
         other as PointOfInterest
 
-        if ( !pointOfInterestCompositeId.equals(other.pointOfInterestCompositeId) ) return false
+        if ( pointOfInterestCompositeId != other.pointOfInterestCompositeId ) return false
 
         return true
     }

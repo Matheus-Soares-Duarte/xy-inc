@@ -8,15 +8,10 @@ import com.matheussd.xyinc.services.exceptions.ObjectNotFoundException
 import com.matheussd.xyinc.services.exceptions.UpgradeRequiredException
 import com.matheussd.xyinc.services.exceptions.enums.ExceptionsMessagesEnum
 import com.matheussd.xyinc.services.exceptions.enums.PointOfInterestExceptionsMessagesEnum
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.lang.NumberFormatException
 
 @Service
-class PointOfInterestService {
-
-    @Autowired
-    var pointOfInterestRepository: PointOfInterestRepository? = null
+class PointOfInterestService(private val pointOfInterestRepository: PointOfInterestRepository) {
 
     private fun returnValidPointOfInterestNameOf(name: String): String {
         if(name.isBlank()){
@@ -54,7 +49,7 @@ class PointOfInterestService {
 
     fun find(name: String, x: String, y: String): PointOfInterest {
         val pointOfInterestCompositeId = returnValidPointOfInterestCompositeIdOf(name, x, y)
-        val pointOfInterest = pointOfInterestRepository!!.findById( pointOfInterestCompositeId )
+        val pointOfInterest = pointOfInterestRepository.findById( pointOfInterestCompositeId )
 
         return pointOfInterest.orElseThrow {
             throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message +
@@ -63,7 +58,7 @@ class PointOfInterestService {
     }
 
     fun findAll(): List<PointOfInterest> {
-        val pointOfInterestList = pointOfInterestRepository!!.findAll().filterIsInstance(PointOfInterest::class.java)
+        val pointOfInterestList = pointOfInterestRepository.findAll().filterIsInstance(PointOfInterest::class.java)
 
         if(pointOfInterestList.isEmpty()){
             throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message)
@@ -77,7 +72,7 @@ class PointOfInterestService {
         val validateY           = returnValidPointOfInterestNumberOf(y)
         val validateMaxDistance = returnValidPointOfInterestNumberOf(maxDistance)
 
-        val pointOfInterestList = pointOfInterestRepository!!.findForProximity(validateX, validateY, validateMaxDistance)
+        val pointOfInterestList = pointOfInterestRepository.findForProximity(validateX, validateY, validateMaxDistance)
 
         if(pointOfInterestList.isEmpty()){
             throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message +
@@ -97,7 +92,7 @@ class PointOfInterestService {
                     " Requested Element: $pointOfInterest.")
         } catch (exception: ObjectNotFoundException){
             val pointOfInterest = PointOfInterest(pointOfInterestCompositeId.name, pointOfInterestCompositeId.x, pointOfInterestCompositeId.y)
-            return pointOfInterestRepository!!.save(pointOfInterest)
+            return pointOfInterestRepository.save(pointOfInterest)
         }
     }
 }

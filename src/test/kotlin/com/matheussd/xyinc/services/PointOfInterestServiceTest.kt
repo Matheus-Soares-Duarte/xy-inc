@@ -9,32 +9,22 @@ import com.matheussd.xyinc.services.exceptions.UpgradeRequiredException
 import com.matheussd.xyinc.services.exceptions.enums.ExceptionsMessagesEnum
 import com.matheussd.xyinc.services.exceptions.enums.PointOfInterestExceptionsMessagesEnum
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import java.util.*
 
 @RunWith(BlockJUnit4ClassRunner::class)
 class PointOfInterestServiceTest {
-    @InjectMocks
-    private var pointOfInterestService = PointOfInterestService()
 
-    @Mock
-    private lateinit var mockPointOfInterestRepository: PointOfInterestRepository
+    private val mockPointOfInterestRepository = Mockito.mock(PointOfInterestRepository::class.java)
 
-    @Before
-    fun before(){
-        MockitoAnnotations.initMocks(this)
-    }
+    private var pointOfInterestService = PointOfInterestService(mockPointOfInterestRepository)
 
     @Test
     fun should_Find_PointOfInterest() {
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
                 .thenReturn( Optional.of(builtPointOfInterest) )
@@ -54,7 +44,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Find_PointOfInterest_WhenNotFoundRequestedElement() {
-        val builtPointOfInterestRequestedElement = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterestRequestedElement = PointOfInterestBuilder.makePointOfInterest().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestRequestedElement.pointOfInterestCompositeId))
                 .thenReturn(Optional.empty())
@@ -77,7 +67,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Find_PointOfInterest_WithBlankName() {
-        val builtPointOfInterestWithBlankName = PointOfInterestBuilder().makePointOfInterest().whithBlankName().build()
+        val builtPointOfInterestWithBlankName = PointOfInterestBuilder.makePointOfInterest().whithBlankName().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithBlankName.pointOfInterestCompositeId))
                 .thenReturn( Optional.of(builtPointOfInterestWithBlankName ))
@@ -100,7 +90,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Find_PointOfInterest_WithNegativeCoordinates() {
-        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder().makePointOfInterest().whithNegativeCoordinates().build()
+        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder.makePointOfInterest().whithNegativeCoordinates().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId))
                 .thenReturn( Optional.of(builtPointOfInterestWithNegativeCoordinates) )
@@ -124,7 +114,7 @@ class PointOfInterestServiceTest {
     @Test
     fun shouldNot_Find_PointOfInterest_WithNonIntegerCoordinates() {
         val nonIntegerCoordinate = "string"
-        val builtPointOfInterest  = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest  = PointOfInterestBuilder.makePointOfInterest().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
                 .thenReturn(Optional.of(builtPointOfInterest))
@@ -147,7 +137,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun should_FindAll_PointOfInterest() {
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
         val pointOfInterestList = ArrayList<PointOfInterest>()
         pointOfInterestList.add(builtPointOfInterest)
 
@@ -185,7 +175,7 @@ class PointOfInterestServiceTest {
     @Test
     fun should_FindForProximity_PointOfInterest() {
         val maxDistance = 10
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
         val pointOfInterestList = ArrayList<PointOfInterest>()
         pointOfInterestList.add(builtPointOfInterest)
 
@@ -211,7 +201,7 @@ class PointOfInterestServiceTest {
     @Test
     fun shouldNot_FindForProximity_PointOfInterest_WhenNotFoundRequestedElement() {
         val maxDistance = 10
-        val builtPointOfInterestRequestedElement = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterestRequestedElement = PointOfInterestBuilder.makePointOfInterest().build()
         val emptyPointOfInterestList = ArrayList<PointOfInterest>()
 
         Mockito.`when`(mockPointOfInterestRepository.findForProximity(
@@ -239,7 +229,7 @@ class PointOfInterestServiceTest {
     @Test
     fun shouldNot_FindForProximity_PointOfInterest_WithNegativeValues() {
         val maxDistance = -10
-        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder().makePointOfInterest().whithNegativeCoordinates().build()
+        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder.makePointOfInterest().whithNegativeCoordinates().build()
         val pointOfInterestList = ArrayList<PointOfInterest>()
         pointOfInterestList.add(builtPointOfInterestWithNegativeCoordinates)
 
@@ -269,7 +259,7 @@ class PointOfInterestServiceTest {
     fun shouldNot_FindForProximity_PointOfInterest_WithNonIntegerValues() {
         val maxDistance = 10
         val nonIntegerValue = "string"
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
         val pointOfInterestList = ArrayList<PointOfInterest>()
         pointOfInterestList.add(builtPointOfInterest)
 
@@ -293,7 +283,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun should_Insert_PointOfInterest() {
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
                 .thenReturn( Optional.empty() )
@@ -312,7 +302,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Insert_PointOfInterest_WhenFoundRequestedElement() {
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val builtPointOfInterest = PointOfInterestBuilder.makePointOfInterest().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
                 .thenReturn( Optional.of(builtPointOfInterest) )
@@ -334,7 +324,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Insert_PointOfInterest_WithBlankName() {
-        val builtPointOfInterestWithBlankName = PointOfInterestBuilder().makePointOfInterest().whithBlankName().build()
+        val builtPointOfInterestWithBlankName = PointOfInterestBuilder.makePointOfInterest().whithBlankName().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithBlankName.pointOfInterestCompositeId))
                 .thenReturn( Optional.empty() )
@@ -356,7 +346,7 @@ class PointOfInterestServiceTest {
 
     @Test
     fun shouldNot_Insert_PointOfInterest_WithNegativeCoordinates() {
-        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder().makePointOfInterest().whithNegativeCoordinates().build()
+        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder.makePointOfInterest().whithNegativeCoordinates().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId))
                 .thenReturn( Optional.empty() )
