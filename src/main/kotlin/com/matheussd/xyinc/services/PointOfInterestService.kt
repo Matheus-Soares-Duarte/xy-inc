@@ -62,6 +62,16 @@ class PointOfInterestService {
         }
     }
 
+    fun findAll(): List<PointOfInterest> {
+        val pointOfInterestList = pointOfInterestRepository!!.findAll().filterIsInstance(PointOfInterest::class.java)
+
+        if(pointOfInterestList.isEmpty()){
+            throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message)
+        }
+
+        return pointOfInterestList
+    }
+
     fun insert(pointOfInterestCompositeId: PointOfInterestCompositeId): PointOfInterest {
         try {
             val pointOfInterest = find(pointOfInterestCompositeId.name,

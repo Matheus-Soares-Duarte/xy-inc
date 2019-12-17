@@ -1,6 +1,7 @@
 package com.matheussd.xyinc.services
 
 import com.matheussd.xyinc.builders.PointOfInterestBuilder
+import com.matheussd.xyinc.domain.PointOfInterest
 import com.matheussd.xyinc.repositories.PointOfInterestRepository
 import com.matheussd.xyinc.services.exceptions.BadRequestException
 import com.matheussd.xyinc.services.exceptions.ObjectNotFoundException
@@ -48,25 +49,6 @@ class PointOfInterestServiceTest {
             Assert.assertEquals(builtPointOfInterest, returnedPointOfInterest)
         } catch (exception: Exception){
             Assert.fail("Unexpected exception = "+exception.message)
-        }
-    }
-
-    @Test
-    fun should_Insert_PointOfInterest() {
-        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
-
-        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
-                .thenReturn( Optional.empty() )
-
-        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterest))
-                .thenReturn( builtPointOfInterest )
-
-        try {
-            val returnedPointOfInterestList = pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
-
-            Assert.assertEquals(builtPointOfInterest, returnedPointOfInterestList)
-        } catch (e: Exception){
-            Assert.fail("Unexpected exception = "+e.message)
         }
     }
 
@@ -158,6 +140,62 @@ class PointOfInterestServiceTest {
                     PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message)
         } catch (exception: BadRequestException){
             Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun should_FindAll_PointOfInterest() {
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val pointOfInterestList = ArrayList<PointOfInterest>()
+        pointOfInterestList.add(builtPointOfInterest)
+
+        Mockito.`when`(mockPointOfInterestRepository.findAll())
+                .thenReturn( pointOfInterestList.asIterable() )
+
+        try {
+            val returnedPointOfInterestList = pointOfInterestService.findAll()
+
+            Assert.assertEquals(pointOfInterestList, returnedPointOfInterestList)
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_FindAll_PointOfInterest_WhenDatabaseIsEmpty() {
+        val emptyPointOfInterestList = ArrayList<PointOfInterest>()
+
+        Mockito.`when`(mockPointOfInterestRepository.findAll())
+                .thenReturn( emptyPointOfInterestList.asIterable() )
+
+        try {
+            pointOfInterestService.findAll()
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message)
+        } catch (exception: ObjectNotFoundException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun should_Insert_PointOfInterest() {
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+
+        Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterest.pointOfInterestCompositeId))
+                .thenReturn( Optional.empty() )
+
+        Mockito.`when`(mockPointOfInterestRepository.save(builtPointOfInterest))
+                .thenReturn( builtPointOfInterest )
+
+        try {
+            val returnedPointOfInterestList = pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
+
+            Assert.assertEquals(builtPointOfInterest, returnedPointOfInterestList)
         } catch (exception: Exception){
             Assert.fail("Unexpected exception = "+exception.message)
         }

@@ -25,6 +25,13 @@ class PointOfInterestResource {
         return ResponseEntity.ok().body(pointOfInterest)
     }
 
+    @GetMapping
+    fun findAll(): ResponseEntity<List<PointOfInterest>> {
+
+        val pointOfInterestList = pointOfInterestService!!.findAll()
+        return ResponseEntity.ok().body(pointOfInterestList)
+    }
+
     @PostMapping
     fun insert(@RequestBody pointOfInterestCompositeId: PointOfInterestCompositeId): ResponseEntity<Void> {
 
