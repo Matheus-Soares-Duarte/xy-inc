@@ -80,7 +80,7 @@ class PointOfInterestServiceTest {
         val builtPointOfInterestWithBlankName = PointOfInterestBuilder().makePointOfInterest().whithBlankName().build()
 
         Mockito.`when`(mockPointOfInterestRepository.findById(builtPointOfInterestWithBlankName.pointOfInterestCompositeId))
-                .thenReturn(Optional.of(builtPointOfInterestWithBlankName))
+                .thenReturn( Optional.of(builtPointOfInterestWithBlankName ))
 
         try {
             pointOfInterestService.find(
@@ -177,6 +177,115 @@ class PointOfInterestServiceTest {
                     PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message)
         } catch (exception: ObjectNotFoundException){
             Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun should_FindForProximity_PointOfInterest() {
+        val maxDistance = 10
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val pointOfInterestList = ArrayList<PointOfInterest>()
+        pointOfInterestList.add(builtPointOfInterest)
+
+        Mockito.`when`(mockPointOfInterestRepository.findForProximity(
+                builtPointOfInterest.pointOfInterestCompositeId.x,
+                builtPointOfInterest.pointOfInterestCompositeId.y,
+                maxDistance
+        )).thenReturn( pointOfInterestList )
+
+        try {
+            val returnedPointOfInterestList = pointOfInterestService.findForProximity(
+                    builtPointOfInterest.pointOfInterestCompositeId.x.toString(),
+                    builtPointOfInterest.pointOfInterestCompositeId.y.toString(),
+                    maxDistance.toString()
+            )
+
+            Assert.assertEquals(pointOfInterestList, returnedPointOfInterestList)
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_FindForProximity_PointOfInterest_WhenNotFoundRequestedElement() {
+        val maxDistance = 10
+        val builtPointOfInterestRequestedElement = PointOfInterestBuilder().makePointOfInterest().build()
+        val emptyPointOfInterestList = ArrayList<PointOfInterest>()
+
+        Mockito.`when`(mockPointOfInterestRepository.findForProximity(
+                builtPointOfInterestRequestedElement.pointOfInterestCompositeId.x,
+                builtPointOfInterestRequestedElement.pointOfInterestCompositeId.y,
+                maxDistance
+        )).thenReturn( emptyPointOfInterestList )
+
+        try {
+            pointOfInterestService.findForProximity(
+                    builtPointOfInterestRequestedElement.pointOfInterestCompositeId.x.toString(),
+                    builtPointOfInterestRequestedElement.pointOfInterestCompositeId.y.toString(),
+                    maxDistance.toString()
+            )
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message)
+        } catch (exception: ObjectNotFoundException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_FindForProximity_PointOfInterest_WithNegativeValues() {
+        val maxDistance = -10
+        val builtPointOfInterestWithNegativeCoordinates = PointOfInterestBuilder().makePointOfInterest().whithNegativeCoordinates().build()
+        val pointOfInterestList = ArrayList<PointOfInterest>()
+        pointOfInterestList.add(builtPointOfInterestWithNegativeCoordinates)
+
+        Mockito.`when`(mockPointOfInterestRepository.findForProximity(
+                builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId.x,
+                builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId.y,
+                maxDistance
+        )).thenReturn( pointOfInterestList )
+
+        try {
+            pointOfInterestService.findForProximity(
+                    builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId.x.toString(),
+                    builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId.y.toString(),
+                    maxDistance.toString()
+            )
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NEGATIVE_VALUE.message)
+        } catch (exception: BadRequestException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NEGATIVE_VALUE.message))
+        } catch (exception: Exception){
+            Assert.fail("Unexpected exception = "+exception.message)
+        }
+    }
+
+    @Test
+    fun shouldNot_FindForProximity_PointOfInterest_WithNonIntegerValues() {
+        val maxDistance = 10
+        val nonIntegerValue = "string"
+        val builtPointOfInterest = PointOfInterestBuilder().makePointOfInterest().build()
+        val pointOfInterestList = ArrayList<PointOfInterest>()
+        pointOfInterestList.add(builtPointOfInterest)
+
+        Mockito.`when`(mockPointOfInterestRepository.findForProximity(
+                builtPointOfInterest.pointOfInterestCompositeId.x,
+                builtPointOfInterest.pointOfInterestCompositeId.y,
+                maxDistance
+        )).thenReturn( pointOfInterestList )
+
+        try {
+            pointOfInterestService.findForProximity(nonIntegerValue, nonIntegerValue, nonIntegerValue)
+
+            Assert.fail("Expected exception did not occur! Expected exception = "+
+                    PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message)
+        } catch (exception: BadRequestException){
+            Assert.assertTrue(exception.message!!.startsWith(PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NON_INTEGER_VALUE.message))
         } catch (exception: Exception){
             Assert.fail("Unexpected exception = "+exception.message)
         }

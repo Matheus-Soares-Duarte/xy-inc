@@ -32,6 +32,17 @@ class PointOfInterestResource {
         return ResponseEntity.ok().body(pointOfInterestList)
     }
 
+    @GetMapping(value = ["/findForProximity"])
+    fun findForProximity(
+            @RequestParam(value = "x") x: String,
+            @RequestParam(value = "y") y: String,
+            @RequestParam(value = "maxDistance") maxDistance: String
+    ): ResponseEntity< List<PointOfInterest> > {
+
+        val pointOfInterestList = pointOfInterestService!!.findForProximity(x, y, maxDistance)
+        return ResponseEntity.ok().body(pointOfInterestList)
+    }
+
     @PostMapping
     fun insert(@RequestBody pointOfInterestCompositeId: PointOfInterestCompositeId): ResponseEntity<Void> {
 

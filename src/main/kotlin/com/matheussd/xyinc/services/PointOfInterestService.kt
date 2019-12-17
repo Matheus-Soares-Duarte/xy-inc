@@ -44,7 +44,7 @@ class PointOfInterestService {
         }
     }
 
-    private fun returnValidPointOfInterestCompositeId(name: String, x: String, y: String): PointOfInterestCompositeId {
+    private fun returnValidPointOfInterestCompositeIdOf(name: String, x: String, y: String): PointOfInterestCompositeId {
         val validatedName = returnValidPointOfInterestNameOf(name)
         val validatedX    = returnValidPointOfInterestNumberOf(x)
         val validatedY    = returnValidPointOfInterestNumberOf(y)
@@ -53,7 +53,7 @@ class PointOfInterestService {
     }
 
     fun find(name: String, x: String, y: String): PointOfInterest {
-        val pointOfInterestCompositeId = returnValidPointOfInterestCompositeId(name, x, y)
+        val pointOfInterestCompositeId = returnValidPointOfInterestCompositeIdOf(name, x, y)
         val pointOfInterest = pointOfInterestRepository!!.findById( pointOfInterestCompositeId )
 
         return pointOfInterest.orElseThrow {
@@ -67,6 +67,21 @@ class PointOfInterestService {
 
         if(pointOfInterestList.isEmpty()){
             throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_EMPTY_DATEBASE.message)
+        }
+
+        return pointOfInterestList
+    }
+
+    fun findForProximity(x: String, y: String, maxDistance: String): List<PointOfInterest> {
+        val validateX           = returnValidPointOfInterestNumberOf(x)
+        val validateY           = returnValidPointOfInterestNumberOf(y)
+        val validateMaxDistance = returnValidPointOfInterestNumberOf(maxDistance)
+
+        val pointOfInterestList = pointOfInterestRepository!!.findForProximity(validateX, validateY, validateMaxDistance)
+
+        if(pointOfInterestList.isEmpty()){
+            throw ObjectNotFoundException(PointOfInterestExceptionsMessagesEnum.OBJECT_NOT_FOUND_FOR_REQUEST.message +
+                    " Requested Element: [Coordinates: ($validateX, $validateY), maxDistance: $validateMaxDistance].")
         }
 
         return pointOfInterestList
