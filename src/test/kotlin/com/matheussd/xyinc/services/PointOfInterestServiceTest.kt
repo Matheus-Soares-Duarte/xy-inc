@@ -294,7 +294,7 @@ class PointOfInterestServiceTest {
                 .thenReturn( builtPointOfInterest )
 
         try {
-            val returnedPointOfInterestList = pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
+            val returnedPointOfInterestList = pointOfInterestService.insert( builtPointOfInterest )
 
             Assert.assertEquals(builtPointOfInterest, returnedPointOfInterestList)
         } catch (exception: Exception){
@@ -313,7 +313,7 @@ class PointOfInterestServiceTest {
                 .thenReturn( builtPointOfInterestWithNegativeCoordinates )
 
         try {
-            pointOfInterestService.insert(builtPointOfInterestWithNegativeCoordinates.pointOfInterestCompositeId)
+            pointOfInterestService.insert( builtPointOfInterestWithNegativeCoordinates )
 
             Assert.fail("Expected exception did not occur! Expected exception = "+
                     PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_NEGATIVE_VALUE.message)
@@ -335,7 +335,7 @@ class PointOfInterestServiceTest {
                 .thenReturn( builtPointOfInterestWithBlankName )
 
         try {
-            pointOfInterestService.insert(builtPointOfInterestWithBlankName.pointOfInterestCompositeId)
+            pointOfInterestService.insert( builtPointOfInterestWithBlankName )
 
             Assert.fail("Expected exception did not occur! Expected exception = "+
                     PointOfInterestExceptionsMessagesEnum.BAD_REQUEST_BLANK_NAME.message)
@@ -357,7 +357,7 @@ class PointOfInterestServiceTest {
                 .thenReturn( builtPointOfInterest )
 
         try {
-            pointOfInterestService.insert(builtPointOfInterest.pointOfInterestCompositeId)
+            pointOfInterestService.insert( builtPointOfInterest )
 
             Assert.fail("Expected exception did not occur! Expected exception = "+
                     ExceptionsMessagesEnum.UPGRADE_REQUIRED.message)

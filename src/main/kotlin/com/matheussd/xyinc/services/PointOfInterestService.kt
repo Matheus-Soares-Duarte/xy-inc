@@ -82,17 +82,16 @@ class PointOfInterestService(private val pointOfInterestRepository: PointOfInter
         return pointOfInterestList
     }
 
-    fun insert(pointOfInterestCompositeId: PointOfInterestCompositeId): PointOfInterest {
+    fun insert(pointOfInterest: PointOfInterest): PointOfInterest {
         try {
-            val pointOfInterest = find(pointOfInterestCompositeId.name,
-                    pointOfInterestCompositeId.x.toString(),
-                    pointOfInterestCompositeId.y.toString())
+            find( pointOfInterest.pointOfInterestCompositeId.name,
+                    pointOfInterest.pointOfInterestCompositeId.x.toString(),
+                    pointOfInterest.pointOfInterestCompositeId.y.toString())
 
             throw UpgradeRequiredException (ExceptionsMessagesEnum.UPGRADE_REQUIRED.message +
                     " Requested Element: $pointOfInterest.")
         } catch (exception: ObjectNotFoundException){
-            val pointOfInterest = PointOfInterest(pointOfInterestCompositeId.name, pointOfInterestCompositeId.x, pointOfInterestCompositeId.y)
-            return pointOfInterestRepository.save(pointOfInterest)
+            return pointOfInterestRepository.save( pointOfInterest )
         }
     }
 }

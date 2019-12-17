@@ -1,7 +1,6 @@
 package com.matheussd.xyinc.resources
 
 import com.matheussd.xyinc.domain.PointOfInterest
-import com.matheussd.xyinc.domain.PointOfInterestCompositeId
 import com.matheussd.xyinc.services.PointOfInterestService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -40,14 +39,14 @@ class PointOfInterestResource(private val pointOfInterestService: PointOfInteres
     }
 
     @PostMapping
-    fun insert(@RequestBody pointOfInterestCompositeId: PointOfInterestCompositeId): ResponseEntity<Void> {
+    fun insert(@RequestBody pointOfInterest: PointOfInterest): ResponseEntity<Void> {
 
-        val pointOfInterest = pointOfInterestService.insert(pointOfInterestCompositeId)
+        val responsePointOfInterest = pointOfInterestService.insert( pointOfInterest )
         val uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/find?name={name}&x={x}&y={y}")
-                .buildAndExpand(pointOfInterest.pointOfInterestCompositeId.name,
-                        pointOfInterest.pointOfInterestCompositeId.x,
-                        pointOfInterest.pointOfInterestCompositeId.y)
+                .buildAndExpand(responsePointOfInterest.pointOfInterestCompositeId.name,
+                        responsePointOfInterest.pointOfInterestCompositeId.x,
+                        responsePointOfInterest.pointOfInterestCompositeId.y)
                 .toUri()
 
         return ResponseEntity.created(uri).build()
