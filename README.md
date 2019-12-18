@@ -1,6 +1,9 @@
 # xy-inc
-<i>This app was designed to respond to the [Backend Developer Teste of ZUP](https://github.com/ZupIT/zup-test/tree/master/backend/pleno), following the request the same was done in Kotlin language. The text below explains the project, its prerequisites, actions for its implementation and execution.</i> <br>
+<i>This app was designed to respond to the [ZUP Backend Developer Test](https://github.com/ZupIT/zup-test/tree/master/backend/pleno). The text below explains the project, its prerequisites, actions for its implementation and execution.</i> <br>
 
+## About the project:
+
+This project was developed, following the request, in Kotlin language. Some applications, frameworks and pluggins were used in the development process, like: [Git](https://git-scm.com/), [GitHub](https://github.com/), [Junit](https://junit.org/junit4/), [Maven](https://maven.apache.org/), [Maven Surefire](https://maven.apache.org/surefire/index.html), [Mockito](https://site.mockito.org), [Postgresql](https://www.postgresql.org/download/), [Postman](https://www.getpostman.com/) and [Spring-Boot](https://spring.io/projects/spring-boot). To create an API that resolves the order in the [ZUP Backend Developer Test](https://github.com/ZupIT/zup-test/tree/master/backend/pleno).
 
 ## Actions:
 In this project, there are four possible actions, all related to points of interest (POIs): <br>
@@ -40,7 +43,7 @@ In this project, there are four possible actions, all related to points of inter
 
 ## Automated Tests:
 
-For this project unit tests were done using [JUnit 4](https://github.com/junit-team/junit4/wiki/Download-and-Install) and [Mockito](https://site.mockito.org). Using [Maven Surefire](https: // maven. apache.org/surefire/index.html) to execute them in parallel (in this application we use 3 threads).<br><br>
+For this project unit tests were done using [JUnit 4](https://github.com/junit-team/junit4/wiki/Download-and-Install) and [Mockito](https://site.mockito.org). Using [Maven Surefire](https://maven.apache.org/surefire/index.html) to execute them in parallel (in this application we use 3 threads).<br><br>
 15 tests were performed for the PointOfInterest Services class, as follows:
  * 5 for the Find function:
   * correct search returning POI = `function find should find point of interest`
@@ -69,8 +72,8 @@ For this project unit tests were done using [JUnit 4](https://github.com/junit-t
 
 ## Prerequisites:
 
-* have TCP port 8080 free (changeable in properties file src> resources> application.properties). <br>
-* have [Postgresql](https://www.postgresql.org/download/) installed, with a database named "xy-inc" created by user "user" that has the password "123", running on localhost on port 5432 (changeable in properties file src> resources> application.properties). <br>
+* have TCP port 8080 free (changeable in properties file src>resources>application.properties). <br>
+* have [Postgresql](https://www.postgresql.org/download/) installed, with a database named "xy-inc" created by user "user" that has the password "123", running on localhost on port 5432 (changeable in properties file src>resources>application.properties). <br>
 * have [JDK version 8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) installed, with your environment variables properly configured (JAVA_HOME). <br>
 * have [Maven](https://maven.apache.org/download.cgi) installed, with your environment variables properly configured (MAVEN_HOME). <br>
 
