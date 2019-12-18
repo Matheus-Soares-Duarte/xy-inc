@@ -1,5 +1,5 @@
 # xy-inc
-<i>This app was designed to respond to the [Backend Developer Teste of ZUP](https://github.com/ZupIT/zup-test/tree/master/backend/pleno). The text below explains the project, its prerequisites, actions for its implementation and execution.</i> <br>
+<i>This app was designed to respond to the [Backend Developer Teste of ZUP](https://github.com/ZupIT/zup-test/tree/master/backend/pleno), following the request the same was done in Kotlin language. The text below explains the project, its prerequisites, actions for its implementation and execution.</i> <br>
 
 
 ## Actions:
@@ -38,6 +38,34 @@ In this project, there are four possible actions, all related to points of inter
     ``` 
     <br><br>
 
+## Automated Tests:
+
+For this project unit tests were done using [JUnit 4](https://github.com/junit-team/junit4/wiki/Download-and-Install) and [Mockito](https://site.mockito.org). Using [Maven Surefire](https: // maven. apache.org/surefire/index.html) to execute them in parallel (in this application we use 3 threads).<br><br>
+15 tests were performed for the PointOfInterest Services class, as follows:
+ * 5 for the Find function:
+  * correct search returning POI = `function find should find point of interest`
+  * search for unregistered POI = `function find should not find point of interest when not found requested element`
+  * search POI with negative coordinates = `function find should not find point of interest when the entered coordinates have negative values`
+  * search POI with non-integer coordinates = `function find should not find point of interest when the entered coordinates have non integer values`
+  * search POI with blank name = `function find should not find point of interest when the entered name is blank`
+
+* 2 for the FindAll function:
+  * correct database element search = `function findAll should find all point of interest in database`
+  * empty database search = `function findAll should not find point of interest when database is empty`
+
+* 4 for the FindForProximity function:
+  * correct search by returning POIs =  `function findForProximity should find the points of interests`
+  * negative values search = `function findForProximity should not find point of interest when the entered have negative values`
+  * non-integer values search = `function findForProximity should not find point of interest when the entered have non integers values`
+  * correct search without return of POIs = `function findForProximity should not find points of interest near when they are not found elements consistent with those requested`
+
+* 4 for the Insert function
+  * correct insertion of POI = `function insert should insert point of interest`
+  * insertion of a POI already registered in the database = `function insert should not insert point of interest when found requested element`
+  * POI with negative coordinate insertion = `function insert should not insert point of interest when the entered coordinates have negative values` 
+  * POI with blank name insertion = `function insert should not insert point of interest when the entered name is blank`
+
+<i>Some cases, such as insertion with non-integer coordinates, have not been tested because spring boot already returns the appropriate exception when trying to convert types to application call.</i> <br>
 
 ## Prerequisites:
 
